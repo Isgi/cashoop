@@ -11,12 +11,35 @@ import CoreData
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
+    
 
     var window: UIWindow?
 
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
+        
+        var rootViewController = self.window!.rootViewController
+        let mainStoryboard : UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
+        
+        var isUserLoggedIn:Bool = NSUserDefaults.standardUserDefaults().boolForKey("isUserLoggedIn")
+        
+        if (isUserLoggedIn) {
+            var loginViewController = mainStoryboard.instantiateViewControllerWithIdentifier("loginViewController") as! LoginViewController
+        
+            window!.rootViewController = loginViewController
+            window!.makeKeyAndVisible()
+            
+        }
+        else{
+            var dashboardViewController = mainStoryboard.instantiateViewControllerWithIdentifier("dashboardViewController") as! DashboardViewController
+            window!.rootViewController = dashboardViewController
+            window!.makeKeyAndVisible()
+        }
+        
         // Override point for customization after application launch.
+        let navigationBarAppearace = UINavigationBar.appearance()
+        navigationBarAppearace.tintColor = uicolorFromHex(0xffffff)
+        navigationBarAppearace.barTintColor = uicolorFromHex(0x8bc34a)
         return true
     }
 
@@ -43,6 +66,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Saves changes in the application's managed object context before the application terminates.
         self.saveContext()
     }
+    
+    
 
     // MARK: - Core Data stack
 
@@ -106,6 +131,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }
         }
     }
+    
+    func uicolorFromHex(rgbValue:UInt32)->UIColor{
+        let red = CGFloat((rgbValue & 0xFF0000) >> 16)/256.0
+        let green = CGFloat((rgbValue & 0xFF00) >> 8)/256.0
+        let blue = CGFloat(rgbValue & 0xFF)/256.0
+        
+        return UIColor(red:red, green:green, blue:blue, alpha:1.0)
+    }
+    
 
 }
 
